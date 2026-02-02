@@ -14,35 +14,26 @@ button = Button(BUTTON_PIN, pull_up=True, bounce_time=0.05)
 FLASH = 0.3
 GAP = 0.2
 
-def all_off():
-    led_a.off()
-    led_b.off()
-
 def flash(led, dur=FLASH):
     led.on()
     sleep(dur)
     led.off()
     sleep(GAP)
 
-def flash_both(dur=FLASH):
-    led_a.on()
-    led_b.on()
-    sleep(dur)
-    all_off()
-    sleep(GAP)
-
 def play_signal(sig):
+    #print("will play", sig)
     if sig == "A":
         flash(led_a)
     else:
         flash(led_b)
 
 def play_sequence(seq):
+    #print(seq)
     sleep(0.6)
     for sig in seq:
         play_signal(sig)
 
-def read_input(timeout=6):
+def read_input(timeout=10):
     start = monotonic()
     while monotonic() - start < timeout:
         if button.wait_for_press(timeout=0.1):
@@ -52,33 +43,16 @@ def read_input(timeout=6):
             return "A" if dur < 0.4 else "B"
     return None
 
-def success_signal():
-    for _ in range(3):
-        flash_both(0.1)
-
-def fail_signal():
-    flash_both(1.0)
-
 def start_signal():
-    flash(led_a, 0.2)
-    flash(led_b, 0.2)
+    print("Klaar?")
+    print("Rode LED betekent: kort, Groene LED betekent: lang")
+    print("Veel succes!")
+    sleep(1)
+
 
 def main():
-    sequence = []
+    print("start logic")
 
-    start_signal()
-
-    while True:
-        sequence.append(random.choice(["A", "B"]))
-        play_sequence(sequence)
-
-        for expected in sequence:
-            got = read_input()
-            if got != expected:
-                fail_signal()
-                return
-            play_signal(got)
-
-        success_signal()
+    print("end logic")
 
 main()
