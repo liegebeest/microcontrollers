@@ -33,7 +33,7 @@ def play_sequence(seq):
     for sig in seq:
         play_signal(sig)
 
-def read_input(timeout=10):
+def read_input(timeout=5):
     start = monotonic()
     while monotonic() - start < timeout:
         if button.wait_for_press(timeout=0.1):
@@ -44,15 +44,30 @@ def read_input(timeout=10):
     return None
 
 def start_signal():
-    print("Klaar?")
-    print("Rode LED betekent: kort, Groene LED betekent: lang")
+    print("Klaar? Boots de lampjes na")
+    print("Rode LED betekent: kort drukken, Groene LED betekent: lang drukken")
     print("Veel succes!")
     sleep(1)
 
 
 def main():
-    print("start logic")
-
+    sequence = []
+    start_signal()
+    teller=0
+    while True:
+        print("Je hebt al:", teller, "punt(en)")
+        print("Kijk naar de lampjes binnen 1 seconde")
+        sleep(1)
+        sequence.append(random.choice(["A", "B"]))
+        play_sequence(sequence)
+        for expected in sequence:
+            got = read_input()
+            if got != expected:
+                print("---")
+                print("Game over, je score is:", teller)
+                print("---")
+                return
+        teller += 1
     print("end logic")
 
 main()
